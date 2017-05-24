@@ -1,11 +1,13 @@
 package android.kimjinhwan.com.customlistview;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -16,19 +18,42 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String DATA_KEY = "position";
+    public static final String DATA_RES_ID = "resid";
+    public static final String DATA_TITLE = "title";
+
+    ArrayList<Data> datas;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //1. 데이터
-        ArrayList<Data> datas = Loader.getData(this);
+        datas = Loader.getData(this);
 
         //2. 아답터
         CustomAdapter adapter = new CustomAdapter(datas, this);
 
         //3. 연결
-        ((ListView) findViewById(R.id.listView)).setAdapter(adapter);   //(ListView 앞에 괄호를 안붙이면 findViewById()가 setAdapter와 먼저 붙음.)
+        //((ListView) findViewById(R.id.listView)).setAdapter(adapter);   //(ListView 앞에 괄호를 안붙이면 findViewById()가 setAdapter와 먼저 붙음.)
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+
+                Data data = datas.get(position);
+
+                intent.putExtra(DATA_KEY, position);
+                intent.putExtra(DATA_RES_ID, data.resId);
+                intent.putExtra(DATA_TITLE, data.title);
+
+                startActivity(intent);
+            }
+        });
     }
+
 }
 
 class CustomAdapter extends BaseAdapter {
