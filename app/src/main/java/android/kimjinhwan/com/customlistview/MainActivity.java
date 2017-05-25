@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
+
 class CustomAdapter extends BaseAdapter {
 //CustomAdapter 제작에 필요한 3가지!
 
